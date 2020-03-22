@@ -11,12 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This document shows how to download, geocode and map data. The data comes from Los Angeles County open data website. The geocoding is done via ArcGis, Python and R integration. The mapping is done in leaflet. This method makes it possible to keep the workflow in R, while deriving the benefits of ArcGis' geocoding capabilities in a Python framework.
 
 ```{r cars}
-summary(cars)
+# Create the color palette
+pal <- colorFactor(
+  palette = c("darkorange3", "darkorange3", "gold"),
+  domain = datgeo$USER_CATEG
+)
 ```
 
 ## Including Plots
@@ -24,7 +26,16 @@ summary(cars)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+# Map the data
+leaflet(datgeo) %>%
+  addProviderTiles(providers$Esri.WorldStreetMap) %>%
+  addCircles(popup = ~IN_City, 
+             radius = ~200,
+             color = ~pal(USER_CATEG),
+             fillOpacity = 1, 
+             stroke = FALSE) %>%
+  addLegend("bottomright", pal = pal, values = ~USER_CATEG,
+            opacity = 1)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+

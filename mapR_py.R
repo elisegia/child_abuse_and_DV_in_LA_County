@@ -25,22 +25,3 @@ datgeo$USER_CATEG <-
   recode(datgeo$USER_CATEG, "AGGRAVATED ASSAULT" = "Domestic Violence", "JUVENILE NON-CRIMINAL" = "SCARS")
 
 
-# Create the color palette
-pal <- colorFactor(
-  palette = c("darkorange3", "darkorange3", "gold"),
-  domain = datgeo$USER_CATEG
-)
-
-# Map the data
-m<-leaflet(datgeo) %>%
-  addProviderTiles(providers$Esri.WorldStreetMap) %>%
-  addCircles(popup = ~IN_City, 
-             radius = ~200,
-             color = ~pal(USER_CATEG),
-             fillOpacity = 1, 
-             stroke = FALSE) %>%
-  addLegend("bottomright", pal = pal, values = ~USER_CATEG,
-            opacity = 1)
-
-
-saveWidget(m, file="m.html")
